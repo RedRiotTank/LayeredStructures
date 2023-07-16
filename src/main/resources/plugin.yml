@@ -1,0 +1,9 @@
+name: LayeredStructures
+version: '${project.version}'
+main: htt.layeredstructures.LayeredStructures
+commands:
+  ls:
+    description: Main command
+api-version: '1.19'
+authors: [RedRiotTank]
+description: Layered Structure plugin for minecraft
