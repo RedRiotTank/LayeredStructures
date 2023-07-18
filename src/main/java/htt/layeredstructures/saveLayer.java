@@ -174,70 +174,50 @@ public class saveLayer {
     }
 
 
-    public void generateLayeredStructure(String jsonFileName, LayeredStructures plugin, Player player){
-
-        World world = player.getWorld();
-
+    public void generateLayeredStructure(String jsonFileName, LayeredStructures plugin, Player player) {
         String PATH = "plugins/LayeredStructures/" + jsonFileName + ".json";
-
-        ArrayList<ArrayList<Block>> layers = new ArrayList<>();
-
-
 
         try {
             String fileContent = new String(Files.readAllBytes(Paths.get(PATH)));
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             JsonObject jsonObject = gson.fromJson(fileContent, JsonObject.class);
-            AtomicInteger layerCounter = new AtomicInteger();
 
-            jsonObject.getAsJsonObject().get("Layers").getAsJsonObject().entrySet().forEach(entry -> {
-                layers.add(new ArrayList<>());
+            new BukkitRunnable() {
+                int layerCounter = 0;
+                int maxLayers = jsonObject.getAsJsonObject("Layers").size();
+                Location playerLaunchedLocation = player.getLocation();
 
-                entry.getValue().getAsJsonObject().get("blocks").getAsJsonArray().forEach(block -> {
-                    JsonArray blockInfo = block.getAsJsonArray();
+                @Override
+                public void run() {
+                    if (layerCounter == maxLayers) {
+                        this.cancel();
+                        return;
+                    }
 
-                    int x = blockInfo.get(0).getAsInt();
-                    int y = blockInfo.get(1).getAsInt();
-                    int z = blockInfo.get(2).getAsInt();
+                    JsonObject layer = jsonObject.getAsJsonObject("Layers").getAsJsonObject(Integer.toString(layerCounter));
 
-                    String type = blockInfo.get(3).getAsString();
+                    layer.getAsJsonArray("blocks").forEach(block -> {
+                        JsonArray blockInfo = block.getAsJsonArray();
 
-                    Block newBlock = player.getWorld().getBlockAt(x + player.getLocation().getBlockX(), y + player.getLocation().getBlockY(), z + player.getLocation().getBlockZ());
-                    newBlock.setType(Material.getMaterial(type));
+                        int x = blockInfo.get(0).getAsInt();
+                        int y = blockInfo.get(1).getAsInt();
+                        int z = blockInfo.get(2).getAsInt();
+                        String type = blockInfo.get(3).getAsString();
 
-                    layers.get(layerCounter.get()).add(newBlock);
-                });
+                        Block newBlock = player.getWorld().getBlockAt(x + playerLaunchedLocation.getBlockX(), y + playerLaunchedLocation.getBlockY(), z + playerLaunchedLocation.getBlockZ());
+                        newBlock.setType(Material.getMaterial(type));
+                    });
 
-                layerCounter.getAndIncrement();
-            });
-
-
-
+                    System.out.println("A");
+                    layerCounter++;
+                }
+            }.runTaskTimer(plugin, 0, 60);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-
-                for(ArrayList<Block> layer : layers){
-                    for(Block block : layer){
-                        world.getBlockAt(block.getLocation()).setType(block.getType());
-
-                    }
-                }
-
-
-
-            }
-        }.runTaskTimer(plugin, 0, 60);
-
-
     }
+
 
 
 
