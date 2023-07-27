@@ -6,8 +6,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
@@ -15,14 +17,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public interface LayeredStructuresAPI {
+public class LayeredStructuresAPI {
 
+    private static Plugin plug;
 
-     static void generateLayeredStructure(String jsonFileName, LayeredStructures plugin, Player player, String desiredDirection, int delay, int tickCounter) {
+    public static void initialize(Plugin p) {
+        plug = p;
+    }
+
+    public static void generateLayeredStructure(String jsonFileName, Location loc, String desiredDirection, int delay, int tickCounter) {
         String PATH = "plugins/LayeredStructures/" + jsonFileName + ".json";
         File file = new File(PATH);
 
-        System.out.println(file);
+
 
         if (file.exists()) {
             try {
@@ -30,10 +37,10 @@ public interface LayeredStructuresAPI {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 JsonObject jsonObject = gson.fromJson(fileContent, JsonObject.class);
 
-                // Get the initial direction from the JSON
+
                 String initialDirection = jsonObject.get("Direction").getAsString();
 
-                // Calculate the rotation needed to align the initial direction with the desired direction
+
                 int rotation = 0;
                 switch (initialDirection.toLowerCase()) {
                     case "north":
@@ -70,14 +77,14 @@ public interface LayeredStructuresAPI {
                         break;
                 }
 
-                // Apply the rotation to each block in the structure
+
                 int finalRotation = rotation;
                 new BukkitRunnable() {
                     int layerCounter = 0;
                     int maxLayers = jsonObject.getAsJsonObject("Layers").size();
-                    Location playerLaunchedLocation = player.getLocation();
+                    World world = loc.getWorld();
 
-                    // Helper method to rotate a position based on the specified rotation
+
                     private int[] rotatePosition(int x, int z, int rotation) {
                         double angle = Math.toRadians(rotation);
                         int[] rotatedPos = new int[2];
@@ -107,22 +114,29 @@ public interface LayeredStructuresAPI {
                             // Rotate the position based on the specified rotation
                             int[] rotatedPos = rotatePosition(x, z, finalRotation);
 
-                            Block newBlock = player.getWorld().getBlockAt(rotatedPos[0] + playerLaunchedLocation.getBlockX(), y + playerLaunchedLocation.getBlockY(), rotatedPos[1] + playerLaunchedLocation.getBlockZ());
+                            Block newBlock = world.getBlockAt(rotatedPos[0] + loc.getBlockX(), y + loc.getBlockY(), rotatedPos[1] + loc.getBlockZ());
                             newBlock.setType(Material.getMaterial(type));
                         });
 
-                        System.out.println("A");
+
                         layerCounter++;
                     }
-                }.runTaskTimer(plugin, delay, tickCounter);
+                }.runTaskTimer(plug, delay, tickCounter);
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
         } else {
-            player.sendMessage("The file " + jsonFileName + " doesn't exist");
+            LayeredStructures.sendConsoleMessage("The file " + jsonFileName + ".json does not exist in the LayeredStructures folder.");
         }
     }
+    public static void test(){
+        System.out.println("test");
+
+    }
+
+
 
 }
+

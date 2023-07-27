@@ -21,7 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 
-public class SaveLayer implements LayeredStructuresAPI{
+public class SaveLayer {
     private static Map<String, userProcedureInfo> procedures = new HashMap<String, userProcedureInfo>();
     SaveLayer(){}
 
