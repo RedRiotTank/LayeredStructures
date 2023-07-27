@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -131,11 +130,6 @@ public class LayeredStructuresAPI {
             LayeredStructures.sendConsoleMessage("The file " + jsonFileName + ".json does not exist in the LayeredStructures folder.");
         }
     }
-    public static void test(){
-        System.out.println("test");
-
-    }
-
 
 
 }

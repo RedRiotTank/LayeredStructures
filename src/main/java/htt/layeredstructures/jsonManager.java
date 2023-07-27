@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class jsonManager {
 
-    static String PATH = "plugins/LayeredStructures/"; //+ userName + "Procedure.json";
+    static String PATH = "plugins/LayeredStructures/";
     static String procedureExtension = "Procedure.json";
     static String extension = ".json";
     public static void createJsonFile(Player player, String direction){
