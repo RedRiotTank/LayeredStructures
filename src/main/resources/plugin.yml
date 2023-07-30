@@ -6,4 +6,8 @@ commands:
     description: Main command
 api-version: '1.19'
 authors: [RedRiotTank]
-description: Layered Structure plugin for minecraft
+description: Layered Structure plugin for Minecraft
+permissions:
+  layeredstructures.use:
+    description: Let players use the plugin
+    default: op

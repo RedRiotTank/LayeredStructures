@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ls implements CommandExecutor, TabCompleter {
+    private final String permission = "layeredstructures.use";
     private final LayeredStructures plugin;
 
     public ls(LayeredStructures plugin){
@@ -28,6 +29,11 @@ public class ls implements CommandExecutor, TabCompleter {
         }
 
         Player player = (Player) commandSender;
+
+        if (!player.hasPermission(permission)) {
+            LayeredStructures.sendPlayerErrorMessage(player, "You don't have permission to use this command.");
+            return true;
+        }
 
         if(commandArgs.length < 1){
             LayeredStructures.sendPlayerErrorMessage(player, "Not enough arguments. Use /ls help for more info");
