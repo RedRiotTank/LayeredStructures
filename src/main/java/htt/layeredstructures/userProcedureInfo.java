@@ -11,13 +11,18 @@ public class userProcedureInfo{
 
     private Location corner1, corner2;
 
+    private int xReference, yReference, zReference;
+
     private ArrayList<Block> previusLayer;
 
-    public userProcedureInfo(){
+    public userProcedureInfo(Location loc){
         currentNumLayer = 0;
         userName = "";
         corner1 = null;
         corner2 = null;
+        xReference = loc.getBlockX();
+        yReference = loc.getBlockY();
+        zReference = loc.getBlockZ();
         previusLayer = new ArrayList<>();
     }
 
@@ -35,6 +40,23 @@ public class userProcedureInfo{
 
     public Location getCorner2() {
         return corner2;
+    }
+    public void setReference(Location loc){
+        xReference = loc.getBlockX();
+        yReference = loc.getBlockY();
+        zReference = loc.getBlockZ();
+    }
+
+    public int getxReference() {
+        return xReference;
+    }
+
+    public int getyReference() {
+        return yReference;
+    }
+
+    public int getzReference() {
+        return zReference;
     }
 
     public ArrayList<Block> getPreviusLayer() {

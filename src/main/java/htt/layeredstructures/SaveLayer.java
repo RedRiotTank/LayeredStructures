@@ -21,6 +21,7 @@ import java.io.IOException;
 
 public class SaveLayer {
     private static Map<String, userProcedureInfo> procedures = new HashMap<String, userProcedureInfo>();
+
     SaveLayer(){}
 
     public static void initProcedure(Player player){
@@ -29,7 +30,7 @@ public class SaveLayer {
 
 
         if(!SaveLayer.getProcedures().containsKey(username)){
-            SaveLayer.getProcedures().put(username, new userProcedureInfo());
+            SaveLayer.getProcedures().put(username, new userProcedureInfo(player.getLocation()));
             SaveLayer.getProcedures().get(username).setUserName(username);
         } else {
             LayeredStructures.sendPlayerErrorMessage(player, "You already have a procedure. Export or cancel it to start a new one please.");
@@ -67,6 +68,8 @@ public class SaveLayer {
     }
 
 
+
+
     public static Map<String, userProcedureInfo> getProcedures() {
         return procedures;
     }
@@ -90,6 +93,10 @@ public class SaveLayer {
 
         Location loc1 = procedures.get(userName).getCorner1();
         Location loc2 = procedures.get(userName).getCorner2();
+
+        int x_reference = procedures.get(userName).getxReference();
+        int y_reference = procedures.get(userName).getyReference();
+        int z_reference = procedures.get(userName).getzReference();
 
 
         String PATH = "plugins/LayeredStructures/" + userName + "Procedure.json";
@@ -120,13 +127,6 @@ public class SaveLayer {
 
             JsonArray blocks = layer.getAsJsonArray("blocks");
 
-            int x_reference = loc1.getBlockX();
-            int y_reference = loc1.getBlockY();
-            int z_reference = loc1.getBlockZ();
-
-
-
-
             while (blockIterator.hasNext()) {
                 Block block = blockIterator.next();
 
@@ -143,7 +143,6 @@ public class SaveLayer {
                     blockInfo.add(block.getZ() - z_reference);
                     blockInfo.add(block.getType().toString());
                     blocks.add(blockInfo);
-
 
                 }
             }
