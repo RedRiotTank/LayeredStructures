@@ -31,11 +31,10 @@ public class LayeredStructuresAPI {
         plug = p;
     }
 
-    public static void generateLayeredStructure(String jsonFileName, Location loc, String desiredDirection, int delay, int tickCounter) {
+    public static ArrayList<Block> generateLayeredStructure(String jsonFileName, Location loc, String desiredDirection, int delay, int tickCounter, boolean overRideBlocks) {
         String PATH = "plugins/LayeredStructures/" + jsonFileName + ".json";
         File file = new File(PATH);
-
-
+        ArrayList<Block> blockList = new ArrayList<>();
 
         if (file.exists()) {
             try {
@@ -121,7 +120,13 @@ public class LayeredStructuresAPI {
                             int[] rotatedPos = rotatePosition(x, z, finalRotation);
 
                             Block newBlock = world.getBlockAt(rotatedPos[0] + loc.getBlockX(), y + loc.getBlockY(), rotatedPos[1] + loc.getBlockZ());
-                            newBlock.setType(Material.getMaterial(type));
+                            if(overRideBlocks) {
+                                newBlock.setType(Material.getMaterial(type));
+                                blockList.add(newBlock);
+                            } else if(!newBlock.getType().isSolid()){
+                                newBlock.setType(Material.getMaterial(type));
+                                blockList.add(newBlock);
+                            }
                         });
 
 
@@ -136,9 +141,12 @@ public class LayeredStructuresAPI {
         } else {
             LayeredStructures.sendConsoleMessage("The file " + jsonFileName + ".json does not exist in the LayeredStructures folder.");
         }
+
+        return blockList;
     }
 
-    public static void generatePreChargedLayeredStructure(String structure, Location loc, String desiredDirection, int delay, int tickCounter) {
+    public static ArrayList<Block> generatePreChargedLayeredStructure(String structure, Location loc, String desiredDirection, int delay, int tickCounter, boolean overRideBlocks) {
+        ArrayList<Block> blockList = new ArrayList<>();
 
         if (preChargedStructures.containsKey(structure)) {
 
@@ -212,7 +220,14 @@ public class LayeredStructuresAPI {
                         int[] rotatedPos = rotatePosition(x, z, finalRotation);
 
                         Block newBlock = world.getBlockAt(rotatedPos[0] + loc.getBlockX(), y + loc.getBlockY(), rotatedPos[1] + loc.getBlockZ());
-                        newBlock.setType(type);
+                        if(overRideBlocks){
+                            newBlock.setType(type);
+                            blockList.add(newBlock);
+                        } else if(!newBlock.getType().isSolid()){
+                            newBlock.setType(type);
+                            blockList.add(newBlock);
+                        }
+
                     });
 
                     layerCounter++;
@@ -224,6 +239,8 @@ public class LayeredStructuresAPI {
         } else {
             LayeredStructures.sendConsoleMessage("The Structure " + structure + "has not been precharged");
         }
+
+        return blockList;
     }
     public static void precharge(String jsonFileName){
         System.out.println("Precharging " + jsonFileName + ".json");

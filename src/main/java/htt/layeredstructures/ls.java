@@ -52,7 +52,7 @@ public class ls implements CommandExecutor, TabCompleter {
                     String directionBuild = commandArgs[2];
                     String delay = commandArgs[3];
                     String tickCounter = commandArgs[4];
-                    LayeredStructuresAPI.generateLayeredStructure(jsonFileName, player.getLocation(), directionBuild, Integer.parseInt(delay), Integer.parseInt(tickCounter));
+                    LayeredStructuresAPI.generateLayeredStructure(jsonFileName, player.getLocation(), directionBuild, Integer.parseInt(delay), Integer.parseInt(tickCounter), false);
                 } else LayeredStructures.sendPlayerErrorMessage(player, "Not enough arguments. Use /ls help for more info");
 
                break;
